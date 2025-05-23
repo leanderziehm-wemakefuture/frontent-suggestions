@@ -4,93 +4,20 @@
   <meta charset="UTF-8" />
   <title>Subscription Modal</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f0f0f0;
-      margin: 0;
-    }
-    .modal {
-      width: 100vw;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
-    }
-    .modal-content {
-      background: white;
-      padding: 3rem;
-      border-radius: 1rem;
-      width: 90%;
-      height: 90%;
-      overflow-y: auto;
-      max-width: 1000px;
-      box-sizing: border-box;
-    }
-    .hidden {
-      display: none;
-    }
-    .btn {
-      padding: 1rem 2rem;
-      border: none;
-      cursor: pointer;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
-    .btn-red {
-      background: #e74c3c;
-      color: white;
-    }
-    .btn-green {
-      background: #2ecc71;
-      color: white;
-    }
-    .plans {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-    .plan {
-      flex: 1 1 30%;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      text-align: center;
-      cursor: pointer;
-    }
-    .plan.selected {
-      border: 2px solid #2ecc71;
-      background: #f4fff6;
-    }
-    .toggle {
-      margin: 1rem 0;
-      text-align: center;
-    }
-    .survey {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-    .center {
-      text-align: center;
-      font-size: 1.25rem;
-      margin-top: 2rem;
-    }
-    .action-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 0.5rem;
-    }
+    body { font-family: sans-serif; background: #f0f0f0; margin: 0; }
+    .modal { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0;
+             display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); }
+    .modal-content { background: white; padding: 2rem; border-radius: 1rem; width: 80%; max-width: 600px; }
+    .hidden { display: none; }
+    .btn { padding: 1rem; border: none; cursor: pointer; border-radius: 0.5rem; font-size: 1rem; }
+    .btn-red { background: #e74c3c; color: white; }
+    .btn-green { background: #2ecc71; color: white; }
+    .plans { display: flex; gap: 1rem; margin: 1rem 0; }
+    .plan { flex: 1; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem; text-align: center; cursor: pointer; }
+    .plan.selected { border: 2px solid #2ecc71; }
+    .toggle { margin: 1rem 0; text-align: center; }
+    .survey { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+    .center { text-align: center; font-size: 1.25rem; margin-top: 3rem; }
   </style>
 </head>
 <body>
@@ -98,15 +25,15 @@
 <div class="modal" id="modal">
   <div class="modal-content" id="step1">
     <h2>Your trial is ending</h2>
-    <p>Would you like to continue with a paid plan or downgrade to the free plan?</p>
-    <div class="action-buttons">
+    <p>Would you like to continue with a paid plan or downgrade to the free tier?</p>
+    <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
       <button class="btn btn-red" onclick="showDowngrade()">Downgrade to Free</button>
       <button class="btn btn-green" onclick="showUpgrade()">Continue with Paid</button>
     </div>
   </div>
 
   <div class="modal-content hidden" id="upgrade">
-    <h2>Choose Your Plan</h2>
+    <h2>Choose a Plan</h2>
     <div class="toggle">
       <label>
         <input type="checkbox" id="billingToggle" onchange="updatePrices()"> Pay Yearly (20% off)
@@ -128,9 +55,9 @@
   </div>
 
   <div class="modal-content hidden" id="downgradeConfirm">
-    <h2>Are you sure you want to downgrade to the free plan?</h2>
+    <h2>Are you sure you want to downgrade?</h2>
     <div class="center">
-      <button class="btn btn-red" onclick="showSurvey()">Yes, Continue</button>
+      <button class="btn btn-red" onclick="showSurvey()">Yes, Downgrade</button>
       <button class="btn" onclick="goBack()">Cancel</button>
     </div>
   </div>
@@ -140,37 +67,24 @@
     <div class="survey">
       <label><input type="checkbox"> Too expensive</label>
       <label><input type="checkbox"> Missing features</label>
-      <label><input type="checkbox"> Not using the product</label>
-      <label><input type="checkbox"> Found a better alternative</label>
+      <label><input type="checkbox"> I'm not using it</label>
+      <label><input type="checkbox"> Found another solution</label>
       <label>Other: <input type="text" placeholder="Tell us more..."></label>
     </div>
-    <div class="center">
-      <button class="btn btn-red" onclick="confirmFinalDowngrade()">Submit & Continue</button>
-    </div>
-  </div>
-
-  <div class="modal-content hidden" id="finalCheck">
-    <h2>⚠️ Final Confirmation</h2>
-    <p>Are you really sure you want to downgrade to the free plan? You’ll lose access to paid features immediately.</p>
-    <div class="center">
-      <button class="btn btn-red" onclick="finalDowngrade()">Yes, Downgrade Me</button>
-      <button class="btn" onclick="goBack()">Go Back</button>
+    <div class="center" style="margin-top: 2rem;">
+      <button class="btn btn-red" onclick="finalDowngrade()">Confirm Downgrade</button>
     </div>
   </div>
 
   <div class="modal-content hidden" id="downgraded">
     <h2>👋 You've downgraded to the free plan</h2>
-    <p class="center">Thanks for trying us out — you're always welcome back!</p>
+    <p class="center">We hope to see you back soon.</p>
   </div>
 </div>
 
 <script>
   let selectedPlan = null;
   let selectedPrice = 0;
-
-  function hideAll() {
-    document.querySelectorAll('.modal-content').forEach(el => el.classList.add('hidden'));
-  }
 
   function showUpgrade() {
     hideAll();
@@ -190,11 +104,6 @@
   function showSurvey() {
     hideAll();
     document.getElementById('survey').classList.remove('hidden');
-  }
-
-  function confirmFinalDowngrade() {
-    hideAll();
-    document.getElementById('finalCheck').classList.remove('hidden');
   }
 
   function finalDowngrade() {
@@ -223,6 +132,10 @@
     document.getElementById('price1').innerText = isYearly ? "€8/mo" : "€10/mo";
     document.getElementById('price2').innerText = isYearly ? "€16/mo" : "€20/mo";
     document.getElementById('price3').innerText = isYearly ? "€40/mo" : "€50/mo";
+  }
+
+  function hideAll() {
+    document.querySelectorAll('.modal-content').forEach(el => el.classList.add('hidden'));
   }
 </script>
 
