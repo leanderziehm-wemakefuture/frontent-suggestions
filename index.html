@@ -18,6 +18,7 @@
     .toggle { margin: 1rem 0; text-align: center; }
     .survey { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
     .center { text-align: center; font-size: 1.25rem; margin-top: 3rem; }
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 2rem; }
   </style>
 </head>
 <body>
@@ -26,7 +27,7 @@
   <div class="modal-content" id="step1">
     <h2>Your trial is ending</h2>
     <p>Would you like to continue with a paid plan or downgrade to the free tier?</p>
-    <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+    <div class="nav-buttons">
       <button class="btn btn-red" onclick="showDowngrade()">Downgrade to Free</button>
       <button class="btn btn-green" onclick="showUpgrade()">Continue with Paid</button>
     </div>
@@ -44,7 +45,8 @@
       <div class="plan" onclick="selectPlan(this, 20, 'Professional')">Professional<br><span id="price2">€20/mo</span></div>
       <div class="plan" onclick="selectPlan(this, 50, 'Company')">Company<br><span id="price3">€50/mo</span></div>
     </div>
-    <div class="center">
+    <div class="nav-buttons">
+      <button class="btn" onclick="goBack()">Back</button>
       <button class="btn btn-green" onclick="confirmUpgrade()">Confirm Upgrade</button>
     </div>
   </div>
@@ -62,17 +64,27 @@
     </div>
   </div>
 
-  <div class="modal-content hidden" id="survey">
-    <h2>Why are you leaving?</h2>
-    <div class="survey">
-      <label><input type="checkbox"> Too expensive</label>
-      <label><input type="checkbox"> Missing features</label>
-      <label><input type="checkbox"> I'm not using it</label>
-      <label><input type="checkbox"> Found another solution</label>
-      <label>Other: <input type="text" placeholder="Tell us more..."></label>
-    </div>
-    <div class="center" style="margin-top: 2rem;">
-      <button class="btn btn-red" onclick="finalDowngrade()">Confirm Downgrade</button>
+<div class="modal-content hidden" id="survey">
+  <h2>Why are you leaving?</h2>
+  <div class="survey">
+    <label><input type="checkbox"> Too expensive</label>
+    <label><input type="checkbox"> Missing features</label>
+    <label><input type="checkbox"> I'm not using it</label>
+    <label><input type="checkbox"> Found another solution</label>
+    <label>Other: <input type="text" placeholder="Tell us more..."></label>
+  </div>
+  <div class="nav-buttons" style="margin-top: 2rem;">
+    <button class="btn" onclick="goBackToDowngradeConfirm()">Back</button>
+    <button class="btn btn-red" onclick="showFinalConfirm()">Continue</button>
+  </div>
+</div>
+
+  <div class="modal-content hidden" id="finalConfirm">
+    <h2>Final confirmation</h2>
+    <p class="center">Are you absolutely sure you want to downgrade to the free plan?</p>
+    <div class="nav-buttons">
+      <button class="btn" onclick="goBackToSurvey()">Back</button>
+      <button class="btn btn-red" onclick="finalDowngrade()">Yes, Downgrade</button>
     </div>
   </div>
 
@@ -85,7 +97,11 @@
 <script>
   let selectedPlan = null;
   let selectedPrice = 0;
-
+  
+  function goBackToDowngradeConfirm() {
+  hideAll();
+  document.getElementById('downgradeConfirm').classList.remove('hidden');
+}
   function showUpgrade() {
     hideAll();
     document.getElementById('upgrade').classList.remove('hidden');
@@ -101,9 +117,19 @@
     document.getElementById('step1').classList.remove('hidden');
   }
 
+  function goBackToSurvey() {
+    hideAll();
+    document.getElementById('survey').classList.remove('hidden');
+  }
+
   function showSurvey() {
     hideAll();
     document.getElementById('survey').classList.remove('hidden');
+  }
+
+  function showFinalConfirm() {
+    hideAll();
+    document.getElementById('finalConfirm').classList.remove('hidden');
   }
 
   function finalDowngrade() {
