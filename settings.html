@@ -1,62 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Auto Top‑Up Settings</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Top-up Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header p {
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .section-description {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-control-sm {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-group .form-control {
+            flex: 1;
+        }
+
+        .currency-symbol {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+
+        .switch-info {
+            flex: 1;
+        }
+
+        .switch-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .switch-description {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .threshold-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-sm {
+            width: 16px;
+            height: 16px;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .threshold-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
 </head>
 <body>
-  <section class="settings-panel">
-    <h2>Auto Top‑Up Settings</h2>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Auto Top-up Settings
+            </h1>
+            <p>Manage your automatic account recharge preferences and spending limits.</p>
+        </div>
 
-    <form id="topup-form">
-      <label for="monthly-limit">Monthly Spend Limit (€):</label>
-      <input type="number" id="monthly-limit" name="limit" min="0" step="1" value="50" required />
+        <div class="settings-card">
+            <form id="settingsForm">
+                <!-- Enable/Disable Auto Top-up -->
+                <div class="form-section">
+                    <div class="switch-container">
+                        <div class="switch-info">
+                            <div class="switch-label">Enable Auto Top-up</div>
+                            <div class="switch-description">Automatically recharge your account when balance is low</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoTopupEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
 
-      <label for="reminder">Email Reminder at (% spent):</label>
-      <input type="range" id="reminder" name="reminderThreshold" min="0" max="100" value="75" />
-      <span id="reminder-val">75%</span>
+                <!-- Monthly Budget -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-title">Monthly Budget</div>
+                        <div class="section-description">Set the maximum amount you want to spend on auto top-ups each month</div>
+                    </div>
 
-      <fieldset>
-        <legend>Recharge When Balance ≤</legend>
-        <label><input type="radio" name="trigger" value="0" checked /> €0</label>
-        <label><input type="radio" name="trigger" value="3" /> €3</label>
-        <label><input type="radio" name="trigger" value="5" /> €5</label>
-      </fieldset>
+                    <div class="form-group">
+                        <label class="form-label" for="monthlyLimit">Monthly Spending Limit</label>
+                        <div class="input-group">
+                            <span class="currency-symbol">€</span>
+                            <input type="number" id="monthlyLimit" class="form-control" value="50.00" min="5" max="500" step="0.01">
+                        </div>
+                        <div class="help-text">Minimum €5.00, Maximum €500.00 per month</div>
+                    </div>
+                </div>
 
-      <button type="submit">Save Settings</button>
-      <button type="button" onclick="history.back()">Cancel</button>
-    </form>
-  </section>
+                <!-- Recharge Settings -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-title">Recharge Trigger</div>
+                        <div class="section-description">When should we automatically recharge your account?</div>
+                    </div>
 
-  <script>
-    const form = document.getElementById("topup-form");
-const reminderInput = document.getElementById("reminder");
-const reminderVal = document.getElementById("reminder-val");
+                    <div class="threshold-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="rechargeThreshold">Recharge when balance drops to</label>
+                            <div class="input-group">
+                                <span class="currency-symbol">€</span>
+                                <input type="number" id="rechargeThreshold" class="form-control" value="3.00" min="0" max="50" step="0.01">
+                            </div>
+                            <div class="help-text">We'll recharge when you have this amount left</div>
+                        </div>
 
-reminderInput.addEventListener("input", () => {
-  reminderVal.textContent = `${reminderInput.value}%`;
-});
+                        <div class="form-group">
+                            <label class="form-label" for="rechargeAmount">Recharge amount</label>
+                            <div class="input-group">
+                                <span class="currency-symbol">€</span>
+                                <input type="number" id="rechargeAmount" class="form-control" value="10.00" min="5" max="100" step="0.01">
+                            </div>
+                            <div class="help-text">How much to add each time</div>
+                        </div>
+                    </div>
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+                    <div class="alert alert-info">
+                        <strong>Example:</strong> When your balance drops to €3.00, we'll automatically add €10.00 to your account.
+                    </div>
+                </div>
 
-  const data = {
-    limit: +form.limit.value,
-    reminderThreshold: +form.reminder.value,
-    triggerLevel: +form.querySelector("input[name='trigger']:checked").value,
-  };
+                <!-- Email Notifications -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-title">Email Notifications</div>
+                        <div class="section-description">Get notified about your spending and recharges</div>
+                    </div>
 
-  // Simulated API call
-  try {
-    console.log("Saving:", data);
-    alert("Settings saved!");
-    history.back();
-  } catch (err) {
-    alert("Error saving settings.");
-  }
-});
+                    <div class="switch-container">
+                        <div class="switch-info">
+                            <div class="switch-label">Email Reminders</div>
+                            <div class="switch-description">Send me email notifications about my spending</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emailEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
 
-  </script>
+                    <div id="emailSettings" class="form-group" style="margin-top: 20px;">
+                        <label class="form-label" for="emailThreshold">Send reminder when I've spent</label>
+                        <div class="input-group">
+                            <input type="number" id="emailThreshold" class="form-control" value="80" min="50" max="95" step="5">
+                            <span class="currency-symbol">% of my monthly limit</span>
+                        </div>
+                        <div class="help-text">Get a heads-up before reaching your monthly limit</div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">
+                        <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to Dashboard
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle email settings visibility
+        document.getElementById('emailEnabled').addEventListener('change', function() {
+            const emailSettings = document.getElementById('emailSettings');
+            emailSettings.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Form submission
+        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const settings = {
+                autoTopupEnabled: document.getElementById('autoTopupEnabled').checked,
+                monthlyLimit: parseFloat(document.getElementById('monthlyLimit').value),
+                rechargeThreshold: parseFloat(document.getElementById('rechargeThreshold').value),
+                rechargeAmount: parseFloat(document.getElementById('rechargeAmount').value),
+                emailEnabled: document.getElementById('emailEnabled').checked,
+                emailThreshold: parseInt(document.getElementById('emailThreshold').value)
+            };
+
+            // Validation
+            if (settings.monthlyLimit < 5 || settings.monthlyLimit > 500) {
+                alert('Monthly limit must be between €5.00 and €500.00');
+                return;
+            }
+
+            if (settings.rechargeThreshold > settings.monthlyLimit) {
+                alert('Recharge threshold cannot be higher than monthly limit');
+                return;
+            }
+
+            if (settings.rechargeAmount > settings.monthlyLimit) {
+                alert('Recharge amount cannot be higher than monthly limit');
+                return;
+            }
+
+            // Simulate API call
+            console.log('Saving settings:', settings);
+            
+            // Show success message
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Saved!';
+            btn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '#007bff';
+            }, 2000);
+        });
+
+        function goBack() {
+            // In a real app, this would navigate back to the dashboard
+            alert('Navigating back to dashboard...');
+        }
+
+        // Real-time validation feedback
+        document.getElementById('monthlyLimit').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            const helpText = this.parentNode.nextElementSibling;
+            
+            if (value < 5) {
+                helpText.style.color = '#dc3545';
+                helpText.textContent = 'Minimum amount is €5.00';
+            } else if (value > 500) {
+                helpText.style.color = '#dc3545';
+                helpText.textContent = 'Maximum amount is €500.00';
+            } else {
+                helpText.style.color = '#6c757d';
+                helpText.textContent = 'Minimum €5.00, Maximum €500.00 per month';
+            }
+        });
+
+        // Update example text when thresholds change
+        function updateExample() {
+            const threshold = document.getElementById('rechargeThreshold').value;
+            const amount = document.getElementById('rechargeAmount').value;
+            const example = document.querySelector('.alert-info');
+            example.innerHTML = `<strong>Example:</strong> When your balance drops to €${threshold}, we'll automatically add €${amount} to your account.`;
+        }
+
+        document.getElementById('rechargeThreshold').addEventListener('input', updateExample);
+        document.getElementById('rechargeAmount').addEventListener('input', updateExample);
+    </script>
 </body>
 </html>

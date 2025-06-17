@@ -1,35 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard - Auto Top-Up</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="dashboard-grid">
-    <div class="widget auto-topup">
-      <h3>Auto Top‑Up Limit</h3>
-      <div class="limit-info">
-        <div class="amounts">
-          <span class="label">Limit:</span>
-          <span class="value">€50/month</span>
-        </div>
-        <div class="progress-bar" aria-label="Progress">
-          <div class="progress" style="width: 46%;"></div>
-        </div>
-        <div class="details">
-          <span>€23 spent</span> • <span>Triggers at €3</span> • <span>Email at 75%</span>
-        </div>
-      </div>
-      <button class="btn-manage" onclick="openSettings()">Manage…</button>
-    </div>
-  </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Top-up Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <script>
-    function openSettings() {
-  window.location.href = "settings.html";
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            width: 600px;
+            height: 400px;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .widget:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .placeholder-widget {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .widget-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+/* Base Toggle Styles */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-  </script>
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4cd964; /* iOS green */
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Status Badge (Your existing styles) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+
+        .widget-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .progress-container {
+            margin: 8px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .widget-action {
+            margin-top: auto;
+            padding-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .currency {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        @media (max-width: 640px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                width: 100%;
+                max-width: 400px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+          <div class="placeholder-widget">Other Widget</div>
+        <div class="placeholder-widget">Other Widget</div>
+        <div class="placeholder-widget">Other Widget</div>
+        <!-- Auto Top-up Widget -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-title">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Monthly Auto Top-up Credits
+                </div>
+<div class="toggle-container">
+  <label class="toggle-switch">
+    <input type="checkbox" id="statusToggle">
+    <span class="slider"></span>
+  </label>
+  <!-- <div id="statusBadge" class="status-badge status-active">
+    <div class="status-dot"></div>
+    Active
+  </div> -->
+</div>
+
+
+            </div>
+
+            <div class="widget-content">
+                <!-- <div class="metric-row"> -->
+                    <!-- <span class="metric-label">Monthly Budget</span> -->
+                    <!-- <span class="metric-value currency" id="monthlyLimit">€50.00</span> -->
+                <!-- </div> -->
+
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-text">This month</span>
+                        <span class="metric-value"><span id="currentSpend">€18.50</span> of <span id="limitDisplay">€50.00</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 37%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Send email when coins below</span>
+                    <span class="progress-text" >7000</span>
+                </div>
+
+                <div class="metric-row">
+                    <span class="metric-label">Recharge 10$ when coins below</span>
+                    <span class="progress-text" id="rechargeTrigger">3000</span>
+                </div>
+            </div>
+
+            <div class="widget-action">
+                <button class="btn btn-primary" onclick="openSettings()">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Manage Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- Placeholder widgets -->
+      
+    </div>
+
+    <script>
+      function openSettings() {
+  window.location.href = "/settings.html";
+}
+
+
+        // Simulate live data updates
+        function updateWidget() {
+            const currentSpend = Math.random() * 50;
+            const monthlyLimit = 50;
+            const percentage = (currentSpend / monthlyLimit) * 100;
+
+            document.getElementById('currentSpend').textContent = `€${currentSpend.toFixed(2)}`;
+            document.getElementById('progressFill').style.width = `${Math.min(percentage, 100)}%`;
+
+    const statusBadge = document.getElementById('statusBadge');
+    let isActive = true; // Tracks current state
+
+    statusBadge.addEventListener('click', () => {
+        isActive = !isActive;
+
+        if (isActive) {
+            statusBadge.className = 'status-badge status-active';
+            statusBadge.innerHTML = '<div class="status-dot"></div>Active';
+        } else {
+            statusBadge.className = 'status-badge status-inactive';
+            statusBadge.innerHTML = '<div class="status-dot"></div>Near Limit';
+        }
+    });
+
+
+
+            
+        }
+
+        // Update every 5 seconds for demo
+        setInterval(updateWidget, 5000);
+    </script>
 </body>
 </html>
